@@ -143,7 +143,8 @@ void Graph::DFS(){
 }
 
 void Graph::DFSCoreAlgorithm(int vertice, vector<int> &verifica_visitado, list<int>   &L){
-    int v, check, flag = 0;
+    int v, check;
+    bool flag = true;
     list<int>::iterator count;
 
     verifica_visitado[vertice] = 1;
@@ -162,11 +163,11 @@ void Graph::DFSCoreAlgorithm(int vertice, vector<int> &verifica_visitado, list<i
         for(count = L.begin(); count != L.end(); ++count){
             v = *count;
             if(v == vertice){
-                flag = 1;
+                flag = false;
             }
         }
 
-        if(flag == 0){
+        if(flag){
             L.push_front(vertice);
         }   
     }
@@ -182,8 +183,6 @@ int main() {
     cout << "\n\n";
     grafo1.DFS();
     cout << "\n\n\n\n\n";
-
-    
 
     Graph grafo2(100);
     grafo2.CriaListaAdjacencias("top_med.txt");
