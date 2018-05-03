@@ -12,12 +12,12 @@ class Graph{
     list<int> *lista_adj;
 
     public:
-    Graph(int n_vertices); //construtor da classe grafo
-    void CriaListaAdjacencias(string GraphFile); //cria lista de adjacencias
-    void ImprimeGrafo(int vertices); //imprime grafo
-    void KahnsAlgorithm(int vertices);//ordenação topologica Kahn
-    void DFS();
-    void DFSCoreAlgorithm(int vertice, vector<int> &verifica_visitado, list<int>   &L); //ordenação topologica dfs
+    Graph(int n_vertices);                                                                  //construtor da classe grafo
+    void CriaListaAdjacencias(string GraphFile);                                            //cria lista de adjacencias
+    void ImprimeGrafo();                                                                    //imprime grafo
+    void KahnsAlgorithm();                                                                  //ordenação topologica Kahn
+    void DFS();                                                                             //inicialização de estruturas para ordenar o grafo por dfs
+    void DFSCoreAlgorithm(int vertice, vector<int> &verifica_visitado, list<int>   &L);     //ordenação topologica dfs
 };
 
 Graph::Graph(int n_vertices){
@@ -52,12 +52,11 @@ void Graph::CriaListaAdjacencias(string GraphFile){
     }
 }
 
-void Graph::ImprimeGrafo(int vertices){
+void Graph::ImprimeGrafo(){
     int i = 0, j;
     list<int>::iterator count;
 
-    for(i; i != vertices; i++){
-        
+    for(i; i != n_vertices; i++){
         cout << i << ": ";
         for(count = lista_adj[i].begin(); count != lista_adj[i].end(); ++count){
             j = *count;
@@ -65,12 +64,10 @@ void Graph::ImprimeGrafo(int vertices){
         }
         cout << '\n';
     }
-
-
 }
 
 //com base no algortítmo apresentado em http://edirlei.3dgb.com.br/aulas/paa/PAA_Aula_07_Ordenacao_Topologica.pdf
-void Graph::KahnsAlgorithm(int vertices){
+void Graph::KahnsAlgorithm(){
     vector<int> I;  //I é o vetor com os graus de saída de cada vértice
     stack<int>  S;  //S é a pilha que recebe os vértices com grau de entrada 0
     list<int>   L;  //L é a lista que representa o grafo ordenado topologicamente
@@ -80,12 +77,12 @@ void Graph::KahnsAlgorithm(int vertices){
     list<int>::iterator count;
 
     //loop para inicializar as posições no vetor I com a quantidade de vertices
-    for(x=0; x != vertices; x++){
+    for(x=0; x != n_vertices; x++){
         I.push_back(0);
     }
 
     //loop para checar todas as listas de adjacências e incrementar os graus dos vértices de entrada
-    for(x=0; x != vertices; x++){
+    for(x=0; x != n_vertices; x++){
         
         for(count = lista_adj[x].begin(); count != lista_adj[x].end(); ++count){
             y = *count;
@@ -93,19 +90,11 @@ void Graph::KahnsAlgorithm(int vertices){
         }
     }
 
-    // cout << "graus: \n";
-    // for(x=0; x != vertices; x++){
-    //     cout << I[x] << "\n";
-    // }
-
-    for(x=0; x != vertices; x++){
+    for(x=0; x != n_vertices; x++){
         if(I[x] == 0){
             S.push(x);
         }
     }
-
-    // for(stack<int> dump = S; !dump.empty(); dump.pop())
-    //     cout << dump.top() << '\n';
 
     while(!S.empty()){
         z = S.top();
@@ -128,7 +117,6 @@ void Graph::KahnsAlgorithm(int vertices){
     }
 
 }
-
 
 //algoritmo DFS tomando certa base no encontrado em: http://professor.ufabc.edu.br/~leticia.bueno/classes/teoriagrafos/materiais/dfs.pdf
 void Graph::DFS(){
@@ -153,7 +141,6 @@ void Graph::DFS(){
         cout << i << " ";
     }    
 }
-
 
 void Graph::DFSCoreAlgorithm(int vertice, vector<int> &verifica_visitado, list<int>   &L){
     int v, check, flag = 0;
@@ -189,9 +176,9 @@ int main() {
 
     Graph grafo1(10);
     grafo1.CriaListaAdjacencias("top_small.txt");
-    //grafo1.ImprimeGrafo(10);
+    //grafo1.ImprimeGrafo();
     //cout << "\n\n";
-    grafo1.KahnsAlgorithm(10);
+    grafo1.KahnsAlgorithm();
     cout << "\n\n";
     grafo1.DFS();
     cout << "\n\n\n\n\n";
@@ -200,27 +187,27 @@ int main() {
 
     Graph grafo2(100);
     grafo2.CriaListaAdjacencias("top_med.txt");
-    //grafo2.ImprimeGrafo(100);
+    //grafo2.ImprimeGrafo();
     //cout << "\n\n";
-    grafo2.KahnsAlgorithm(100);
+    grafo2.KahnsAlgorithm();
     cout << "\n\n";
     grafo2.DFS();
     cout << "\n\n\n\n\n";
     
     Graph grafo3(10000);
     grafo3.CriaListaAdjacencias("top_large.txt");
-    //grafo3.ImprimeGrafo(10000);
+    //grafo3.ImprimeGrafo();
     //cout << "\n\n";
-    grafo3.KahnsAlgorithm(10000);
+    grafo3.KahnsAlgorithm();
     cout << "\n\n";
     grafo3.DFS();
     cout << "\n\n\n\n\n";
 
     Graph grafo4(100000);
     grafo4.CriaListaAdjacencias("top_huge.txt");
-    //grafo4.ImprimeGrafo(100000);
+    //grafo4.ImprimeGrafo();
     //cout << "\n\n";
-    grafo4.KahnsAlgorithm(100000);
+    grafo4.KahnsAlgorithm();
     cout << "\n\n";
     grafo4.DFS();
     cout << "\n\n\n\n\n";
