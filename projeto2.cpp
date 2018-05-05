@@ -154,42 +154,67 @@ void Graph::DFSCoreAlgorithm(int vertice, vector<int> &verifica_visitado, list<i
 }
 
 int main(){
+    clock_t t;
 
     Graph grafo1(10);
     grafo1.CriaListaAdjacencias("top_small.txt");
     //grafo1.ImprimeGrafo();
     //cout << "\n\n";
+    t = clock();
     grafo1.KahnsAlgorithm();
-    cout << "\n\n";
+    t = clock() - t;
+    cout << "\nPara ordenar e grafo de 10 vertices por Kahn levou " << ((float)t)/CLOCKS_PER_SEC << " segundos.\n\n";
+    getchar();
+    t = clock();
     grafo1.DFS();
-    cout << "\n\n\n\n\n";
+    t = clock() - t;
+    cout << "\nPara ordenar e grafo de 10 vertices por DFS levou " << ((float)t)/CLOCKS_PER_SEC << " segundos.\n\n\n\n\n";
+    getchar();
 
     Graph grafo2(100);
     grafo2.CriaListaAdjacencias("top_med.txt");
     //grafo2.ImprimeGrafo();
     //cout << "\n\n";
+    t = clock();
     grafo2.KahnsAlgorithm();
-    cout << "\n\n";
+    t = clock() - t;
+    cout << "\nPara ordenar e grafo de 100 vertices por Kahn levou " << ((float)t)/CLOCKS_PER_SEC << " segundos.\n\n";
+    getchar();
+    t = clock();
     grafo2.DFS();
-    cout << "\n\n\n\n\n";
+    t = clock() - t;
+    cout << "\nPara ordenar e grafo de 100 vertices por DFS levou " << ((float)t)/CLOCKS_PER_SEC << " segundos.\n\n\n\n\n";
+    getchar();
 
     Graph grafo3(10000);
     grafo3.CriaListaAdjacencias("top_large.txt");
     //grafo3.ImprimeGrafo();
     //cout << "\n\n";
+    t = clock();
     grafo3.KahnsAlgorithm();
-    cout << "\n\n";
+    t = clock() - t;
+    cout << "\nPara ordenar e grafo de 10000 vertices por Kahn levou " << ((float)t)/CLOCKS_PER_SEC << " segundos.\n\n";
+    getchar();
+    t = clock();
     grafo3.DFS();
-    cout << "\n\n\n\n\n";
+    t = clock() - t;
+    cout << "\nPara ordenar e grafo de 10000 vertices por DFS levou " << ((float)t)/CLOCKS_PER_SEC << " segundos.\n\n\n\n\n";
+    getchar();
 
     Graph grafo4(100000);
     grafo4.CriaListaAdjacencias("top_huge.txt");
     //grafo4.ImprimeGrafo();
     //cout << "\n\n";
+    t = clock();
     grafo4.KahnsAlgorithm();
-    cout << "\n\n";
+    t = clock() - t;
+    cout << "\nPara ordenar e grafo de 100000 vertices por Kahn levou " << ((float)t)/CLOCKS_PER_SEC << " segundos.\n\n";
+    getchar();
+    t = clock();
     grafo4.DFS();
-    cout << "\n\n\n\n\n";
+    t = clock() - t;
+    cout << "\nPara ordenar e grafo de 100000 vertices por DFS levou " << ((float)t)/CLOCKS_PER_SEC << " segundos.\n\n\n\n\n";
+    getchar();
 
     return 0;
 }
