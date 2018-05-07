@@ -5,6 +5,7 @@
 #include <fstream>
 #include <queue>
 #include <ctime>
+#define GNUPLOT "gnuplot -persist"
 
 using namespace std;
 class Graph{
@@ -18,6 +19,8 @@ class Graph{
     void KahnsAlgorithm();                                                            //ordenação topologica Kahn
     void DFS();                                                                       //inicialização de estruturas para ordenar o grafo por dfs
     void DFSCoreAlgorithm(int vertice, vector<int> &verifica_visitado, list<int> &L); //ordenação topologica dfs
+    void GenFileToGraph(string File, double time_vertice, double time_total);         //gera o arquivo DFSData e KhanData para gerar o grafico
+    void GenGraph();                                                                  //gera o grafico com os arquivos criados na funcao GenFileToGraph
 };
 
 Graph::Graph(int n_vertices){
@@ -153,9 +156,42 @@ void Graph::DFSCoreAlgorithm(int vertice, vector<int> &verifica_visitado, list<i
     L.push_front(vertice);
 }
 
+void Graph::GenFileToGraph(string File, double time_vertice, double time_total){
+    int vertice = 1;
+    double time_graph = 0.0000;
+    ofstream FileToGraph;
+
+    //limpa o que já tiver escrito em data.txt para salvar novos dados e gerar o grafico
+    FileToGraph.open(File, ofstream::out | ofstream::trunc);
+
+    //loop que grava o tempo referente ao vertice usando ordenacao de Khan no arquivo KhanData10.txt
+     while(time_graph <= time_total && vertice <= n_vertices){
+        FileToGraph << time_graph << " " << vertice << endl;
+        vertice++;
+        time_graph = time_graph + time_vertice;
+    }
+    FileToGraph.close();
+}
+
+//feito com base na video aula em https://www.youtube.com/watch?v=SCDFotjMHTw&t= - Tutorial Gnuplot 4 - Plotando Gráficos a Partir de Arquivos de Texto
+void Graph::GenGraph(){
+    FILE *gnuplot;
+    gnuplot = popen(GNUPLOT, "w");
+
+    fprintf(gnuplot, "set key above center\n");
+    fprintf(gnuplot, "set xlabel 'TEMPO'\n");
+    fprintf(gnuplot, "set ylabel 'TOTAL DE VERTICES'\n");
+    fprintf(gnuplot, "plot 'KhanData.txt' title 'KHAN ALGORITHM' lt rgb 'purple' with lines smooth csplines, 'DFSData.txt' title 'DFS ALGORITHM' lt rgb 'green' with lines smooth csplines\n");
+    fclose(gnuplot);
+}
+
 int main(){
+    double time_total, time_vertice;
+    //time_total = tempo total gasto para rodar o algoritmo
+    //time_vertice = tempo gasto em cada vertice 
     clock_t t;
 
+    //Grafo de 10 vertices --------------------------------------------------------------------------------
     Graph grafo1(10);
     grafo1.CriaListaAdjacencias("top_small.txt");
     //grafo1.ImprimeGrafo();
@@ -163,14 +199,26 @@ int main(){
     t = clock();
     grafo1.KahnsAlgorithm();
     t = clock() - t;
-    cout << "\nPara ordenar e grafo de 10 vertices por Kahn levou " << ((float)t)/CLOCKS_PER_SEC << " segundos.\n\n";
-    getchar();
+    time_total = ((float)t)/CLOCKS_PER_SEC;
+    time_vertice = (((float)t)/CLOCKS_PER_SEC)/10; //calcula media de tempo em cada vertice
+    cout << "\nPara ordenar e grafo de 10 vertices por Kahn levou " << time_total << " segundos.\n\n";
+    grafo1.GenFileToGraph("KhanData.txt", time_vertice, time_total); // 
+    
     t = clock();
     grafo1.DFS();
     t = clock() - t;
-    cout << "\nPara ordenar e grafo de 10 vertices por DFS levou " << ((float)t)/CLOCKS_PER_SEC << " segundos.\n\n\n\n\n";
+    time_total = ((float)t)/CLOCKS_PER_SEC;
+    time_vertice = (((float)t)/CLOCKS_PER_SEC)/10; //calcula media de tempo em cada vertice
+    cout << "\nPara ordenar e grafo de 10 vertices por DFS levou " << time_total << " segundos.\n\n";
+    grafo1.GenFileToGraph("DFSData.txt", time_vertice, time_total);
+    printf("Pressione ENTER para mostrar o Grafico");
+    getchar();
+    grafo1.GenGraph(); //Apos gerar os 2 arquivos texto com tempo de execução do DFS e do Khan, chama a funcao para plotar o grafico
+    printf("Pressione ENTER para prosseguir com o proximo grafo\n");
     getchar();
 
+
+    //Grafo de 100 vertices --------------------------------------------------------------------------------
     Graph grafo2(100);
     grafo2.CriaListaAdjacencias("top_med.txt");
     //grafo2.ImprimeGrafo();
@@ -178,14 +226,26 @@ int main(){
     t = clock();
     grafo2.KahnsAlgorithm();
     t = clock() - t;
-    cout << "\nPara ordenar e grafo de 100 vertices por Kahn levou " << ((float)t)/CLOCKS_PER_SEC << " segundos.\n\n";
-    getchar();
+    time_total = ((float)t)/CLOCKS_PER_SEC;
+    time_vertice = (((float)t)/CLOCKS_PER_SEC)/100; //calcula media de tempo em cada vertice
+    cout << "\nPara ordenar e grafo de 100 vertices por Kahn levou " << time_total << " segundos.\n\n";
+    grafo2.GenFileToGraph("KhanData.txt", time_vertice, time_total);
+    
     t = clock();
     grafo2.DFS();
     t = clock() - t;
-    cout << "\nPara ordenar e grafo de 100 vertices por DFS levou " << ((float)t)/CLOCKS_PER_SEC << " segundos.\n\n\n\n\n";
+    time_total = ((float)t)/CLOCKS_PER_SEC;
+    time_vertice = (((float)t)/CLOCKS_PER_SEC)/100; //calcula media de tempo em cada vertice
+    cout << "\nPara ordenar e grafo de 100 vertices por DFS levou " << time_total << " segundos.\n\n";
+    grafo2.GenFileToGraph("DFSData.txt", time_vertice, time_total);
+    printf("Pressione ENTER para mostrar o Grafico");
+    getchar();
+    grafo2.GenGraph(); //Apos gerar os 2 arquivos texto com tempo de execução do DFS e do Khan, chama a funcao para plotar o grafico
+    printf("Pressione ENTER para prosseguir com o proximo grafo");
     getchar();
 
+
+    //Grafo de 10000 vertices --------------------------------------------------------------------------------
     Graph grafo3(10000);
     grafo3.CriaListaAdjacencias("top_large.txt");
     //grafo3.ImprimeGrafo();
@@ -193,14 +253,27 @@ int main(){
     t = clock();
     grafo3.KahnsAlgorithm();
     t = clock() - t;
-    cout << "\nPara ordenar e grafo de 10000 vertices por Kahn levou " << ((float)t)/CLOCKS_PER_SEC << " segundos.\n\n";
-    getchar();
+    time_total = ((float)t)/CLOCKS_PER_SEC;
+    time_vertice = (((float)t)/CLOCKS_PER_SEC)/10000; //calcula media de tempo em cada vertice
+    cout << "\nPara ordenar e grafo de 10000 vertices por Kahn levou " << time_total << " segundos.\n\n";
+    grafo3.GenFileToGraph("KhanData.txt", time_vertice, time_total);
+
+
     t = clock();
     grafo3.DFS();
     t = clock() - t;
-    cout << "\nPara ordenar e grafo de 10000 vertices por DFS levou " << ((float)t)/CLOCKS_PER_SEC << " segundos.\n\n\n\n\n";
+    time_total = ((float)t)/CLOCKS_PER_SEC;
+    time_vertice = (((float)t)/CLOCKS_PER_SEC)/10000; //calcula media de tempo em cada vertice
+    cout << "\nPara ordenar e grafo de 10000 vertices por DFS levou " << time_total << " segundos.\n\n";
+    grafo3.GenFileToGraph("DFSData.txt", time_vertice, time_total);
+    printf("Pressione ENTER para mostrar o Grafico");
+    getchar();
+    grafo3.GenGraph(); //Apos gerar os 2 arquivos texto com tempo de execução do DFS e do Khan, chama a funcao para plotar o grafico
+    printf("Pressione ENTER para prosseguir com o proximo grafo");
     getchar();
 
+
+    //Grafo de 100000 vertices --------------------------------------------------------------------------------
     Graph grafo4(100000);
     grafo4.CriaListaAdjacencias("top_huge.txt");
     //grafo4.ImprimeGrafo();
@@ -208,12 +281,23 @@ int main(){
     t = clock();
     grafo4.KahnsAlgorithm();
     t = clock() - t;
-    cout << "\nPara ordenar e grafo de 100000 vertices por Kahn levou " << ((float)t)/CLOCKS_PER_SEC << " segundos.\n\n";
-    getchar();
+    time_total = ((float)t)/CLOCKS_PER_SEC;
+    time_vertice = (((float)t)/CLOCKS_PER_SEC)/100000; //calcula media de tempo em cada vertice
+    cout << "\nPara ordenar e grafo de 100000 vertices por Kahn levou " << time_total << " segundos.\n\n";
+    grafo4.GenFileToGraph("KhanData.txt", time_vertice, time_total);
+    
+    //Executa DFS no arquivo de 100000
     t = clock();
     grafo4.DFS();
     t = clock() - t;
-    cout << "\nPara ordenar e grafo de 100000 vertices por DFS levou " << ((float)t)/CLOCKS_PER_SEC << " segundos.\n\n\n\n\n";
+    time_total = ((float)t)/CLOCKS_PER_SEC;
+    time_vertice = (((float)t)/CLOCKS_PER_SEC)/100000; //calcula media de tempo em cada vertice
+    cout << "\nPara ordenar e grafo de 100000 vertices por DFS levou " << time_total << " segundos.\n\n";
+    grafo4.GenFileToGraph("DFSData.txt", time_vertice, time_total);
+    printf("Pressione ENTER para mostrar o Grafico");
+    getchar();
+    grafo4.GenGraph(); //Apos gerar os 2 arquivos texto com tempo de execução do DFS e do Khan, chama a funcao para plotar o grafico
+    printf("Pressione ENTER para terminar o programa");
     getchar();
 
     return 0;
